@@ -39,6 +39,18 @@ npm start
 
 El servidor Node sirve el frontend compilado y la API desde el mismo origen. Configura `PORT` y `DATA_DIR` para cambiar el puerto y la ubicación del archivo SQLite.
 
+## Despliegue en Railway
+
+El archivo `railway.json` configura el build, el comando de inicio y el healthcheck. Para publicar desde GitHub, conecta este repositorio en Railway y selecciona la rama `main`.
+
+En el servicio de Railway:
+
+1. Añade un volumen montado en `/data`.
+2. Define `DATA_DIR=/data` y `NODE_ENV=production`.
+3. Genera un dominio público para el servicio.
+
+Los deploys posteriores de `main` se publican automáticamente. El volumen conserva el historial SQLite entre deploys; sin él, la app arranca pero los datos se pierden al reemplazar la instancia.
+
 ## API
 
 - `GET /api/health`
