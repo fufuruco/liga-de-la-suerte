@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import PageHeader from '@/components/PageHeader';
 import { COLORES_EQUIPO, puntajeBase, resumenEquipo } from '@/lib/estadistica';
 import {
@@ -22,9 +22,9 @@ export default function Resultado() {
   useEffect(() => {
     (async () => {
       const [sesion, equiposPage, tiradasPage] = await Promise.all([
-        base44.entities.Sesion.get(id),
-        base44.entities.Equipo.filter({ sesion_id: id }, 'orden', 10),
-        base44.entities.Tirada.filter({ sesion_id: id }, 'created_date', 200),
+        api.getSession(id),
+        api.listTeams(id),
+        api.listSessionRolls(id, 200),
       ]);
       setDatos({
         sesion,

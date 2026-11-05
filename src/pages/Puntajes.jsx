@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import PageHeader from '@/components/PageHeader';
 import { Trophy, Trash2, ChevronRight, Users } from 'lucide-react';
 
@@ -16,8 +16,8 @@ export default function Puntajes() {
   useEffect(() => {
     (async () => {
       const [ses, ti] = await Promise.all([
-        base44.entities.Sesion.list('-created_date', 25),
-        base44.entities.Tirada.list('-created_date', 500),
+        api.listSessions(25),
+        api.listRolls(500),
       ]);
       setSesiones(ses);
       setTiradas(ti);
@@ -25,9 +25,7 @@ export default function Puntajes() {
   }, []);
 
   const borrar = async (sesion) => {
-    await base44.entities.Tirada.deleteMany({ sesion_id: sesion.id });
-    await base44.entities.Equipo.deleteMany({ sesion_id: sesion.id });
-    await base44.entities.Sesion.delete(sesion.id);
+    await api.deleteSession(sesion.id);
     setSesiones((prev) => prev.filter((s) => s.id !== sesion.id));
     setTiradas((prev) => prev.filter((t) => t.sesion_id !== sesion.id));
     setConfirmar(null);

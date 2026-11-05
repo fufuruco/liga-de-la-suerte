@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import PageHeader from '@/components/PageHeader';
 import PredictionCard from '@/components/estimador/PredictionCard';
 import SumDistribution from '@/components/estimador/SumDistribution';
@@ -86,7 +86,7 @@ export default function Estimador() {
   const [pronostico, setPronostico] = useState(null);
 
   useEffect(() => {
-    base44.entities.Tirada.list('-created_date', 300).then((registros) => {
+    api.listRolls(300).then((registros) => {
       setTiradas(registros);
     });
   }, []);

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import Dice from '@/components/Dice';
 import PageHeader from '@/components/PageHeader';
 import ManualRoll from '@/components/ManualRoll';
@@ -22,8 +22,8 @@ export default function GameBoard({ sesion }) {
   useEffect(() => {
     (async () => {
       const [eq, ti] = await Promise.all([
-        base44.entities.Equipo.filter({ sesion_id: sesion.id }, 'orden', 10),
-        base44.entities.Tirada.filter({ sesion_id: sesion.id }, 'created_date', 200),
+        api.listTeams(sesion.id),
+        api.listSessionRolls(sesion.id, 200),
       ]);
       setEquipos(eq);
       setTiradas(ti);
@@ -51,19 +51,11 @@ export default function GameBoard({ sesion }) {
   const registrar = async (dado1, dado2, manual) => {
     if (!equipoActual) return;
     setGuardando(true);
-    const suma = dado1 + dado2;
-    const base = puntajeBase(jornadaActual);
-    const creada = await base44.entities.Tirada.create({
-      sesion_id: sesion.id,
+    const creada = await api.createRoll(sesion.id, {
       equipo_id: equipoActual.id,
-      equipo_nombre: equipoActual.nombre,
       jornada: jornadaActual,
       dado1,
       dado2,
-      suma,
-      ajuste: suma - 4,
-      puntaje_base: base,
-      puntaje_final: base + (suma - 4),
       manual: Boolean(manual),
     });
     setTiradas((prev) => [...prev, creada]);
@@ -94,7 +86,7 @@ export default function GameBoard({ sesion }) {
     const ranking = equipos
       .map((eq) => ({ nombre: eq.nombre, total: totales[eq.id] || 0 }))
       .sort((a, b) => b.total - a.total);
-    await base44.entities.Sesion.update(sesion.id, {
+    await api.updateSession(sesion.id, {
       estado: 'finalizada',
       campeon: ranking[0]?.nombre || '',
     });

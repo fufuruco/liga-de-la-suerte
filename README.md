@@ -1,62 +1,66 @@
-# Base44 Project
+# Liga de la Suerte
 
-Use this repository to run and edit the app locally, then publish changes back through Base44.
+Aplicación educativa para jugar partidas por jornadas, registrar los resultados de dos dados, calcular puntajes y estimar probabilidades desde el historial.
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+## Requisitos
 
-## Prerequisites
+- Node.js 22.13 o superior (usa `node:sqlite`).
+- npm.
 
-1. Clone the repository using the project's Git URL.
-2. Navigate to the project directory.
-3. Install dependencies: `npm install`.
-4. Install the Base44 CLI: `npm install -g base44@latest`.
-5. Install [Deno](https://docs.deno.com/runtime/getting_started/installation/) — the local Base44 backend runs on it.
+## Desarrollo
 
-Run `base44 --help` (or see the [CLI reference](https://docs.base44.com/developers/references/cli/commands/introduction)) for the full command surface.
-
-## Run Locally
-
-Three commands, from the project root:
-
-```bash
-base44 login   # one-time per machine
-base44 link    # one-time per clone
-base44 dev     # local backend + frontend together
+```powershell
+npm install
+npm run dev
 ```
 
-Open the frontend URL that `base44 dev` prints (typically `http://localhost:5173`).
+El comando inicia en una sola terminal:
 
-Notes:
+- API Node en `http://localhost:4400`.
+- Vite en `http://localhost:5173`.
+- SQLite persistente en `data/liga.sqlite`.
 
-- **Every fresh clone needs `base44 link`.** It writes `base44/.app.jsonc` (the app-id pointer), which is deliberately gitignored. Your app id is in the Builder URL (`app.base44.com/apps/<id>/...`); `base44 link --help` shows the non-interactive flags.
-- **`base44 dev` runs the frontend for you** (via `site.serveCommand` in this repo's `base44/config.jsonc`) — never run `npm run dev` yourself: alone it serves a UI with no backend behind it (`[base44] Proxy not enabled`, every `/api` call fails), and alongside `base44 dev` the second Vite silently takes the next port and you end up looking at the wrong one.
-- **The app must be published at least once for the UI to load under `base44 dev`.** The frontend boots by fetching app settings from the hosted app; before the first publish that fails and every page redirects to login. The local API works regardless.
-- Entities, functions, and auth run locally — entity data is **in-memory only**, wiped when `base44 dev` restarts. Everything else (Core integrations, OAuth login) is forwarded to your deployed app. Full breakdown: [Local development overview](https://docs.base44.com/developers/backend/overview/local-dev/local-development-overview).
+Detén ambos procesos con `Ctrl+C`. Los datos sobreviven al reinicio del servidor. El directorio `data/` está excluido de Git.
 
-## Frontend Only, Hosted Backend
+También se pueden ejecutar por separado:
 
-To work on just the frontend against your app's live hosted backend:
-
-```bash
-base44 dev --remote
+```powershell
+npm run dev:api
+npm run dev:web
 ```
 
-⚠️ In this mode writes go to your app's **production data** — plain `base44 dev` keeps everything local.
+## Producción
 
-## Publish Your Changes
-
-After pushing your changes to git, open the Base44 dashboard and publish the app:
-
-```bash
-base44 dashboard open
+```powershell
+npm run build
+$env:NODE_ENV = 'production'
+npm start
 ```
 
-This repo syncs to Base44 through git, so publish from the dashboard rather than `base44 deploy` — a CLI deploy ships your local tree directly, bypassing the sync, and the deployed state silently diverges from the repo.
+El servidor Node sirve el frontend compilado y la API desde el mismo origen. Configura `PORT` y `DATA_DIR` para cambiar el puerto y la ubicación del archivo SQLite.
 
-## Docs & Support
+## API
 
-GitHub integration: [https://docs.base44.com/developers/app-code/local-development/github](https://docs.base44.com/developers/app-code/local-development/github)
+- `GET /api/health`
+- `GET /api/sessions?limit=25&estado=en_curso`
+- `POST /api/sessions` con nombre, jornadas y equipos iniciales
+- `GET /api/sessions/:id`
+- `PATCH /api/sessions/:id` para finalizar una partida
+- `DELETE /api/sessions/:id` (elimina equipos y tiros asociados)
+- `GET /api/sessions/:id/teams`
+- `GET /api/sessions/:id/rolls?limit=200`
+- `POST /api/sessions/:id/rolls`
+- `GET /api/rolls?limit=300`
+- `DELETE /api/history`
 
-Local development: [https://docs.base44.com/developers/backend/overview/local-dev/local-development-overview](https://docs.base44.com/developers/backend/overview/local-dev/local-development-overview)
+El servidor valida dados, jornadas, equipos y calcula suma, ajuste y puntaje final; el cliente no envía puntajes calculados.
 
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+## Fórmulas del juego
+
+- Suma: `D = dado1 + dado2`.
+- Ajuste: `I_t = D - 4`.
+- Base por jornada: `T_t = 20 + 2t`.
+- Puntaje final: `Y_t = T_t + I_t`.
+- La estimación estadística combina frecuencias registradas con una referencia teórica de dos dados equilibrados.
+
+La aplicación es independiente: no requiere una cuenta de proveedor externo. Los datos se almacenan en SQLite.

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import PageHeader from '@/components/PageHeader';
 import { leerConfig, guardarConfig } from '@/lib/config';
 import { Check, Plus, Minus, Trash2 } from 'lucide-react';
@@ -27,9 +27,7 @@ export default function Configuracion() {
 
   const borrarHistorial = async () => {
     setBorrando(true);
-    await base44.entities.Tirada.deleteMany({});
-    await base44.entities.Equipo.deleteMany({});
-    await base44.entities.Sesion.deleteMany({});
+    await api.deleteHistory();
     setBorrando(false);
     setConfirmarBorrado(false);
   };

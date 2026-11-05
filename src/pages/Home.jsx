@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Play, Target, Trophy, Settings, LogOut, Crown, Dices, ArrowRight, Sparkles } from 'lucide-react';
-import { Image } from '@/components/ui/image';
-import { base44 } from '@/api/base44Client';
+import Dice from '@/components/Dice';
+import { api } from '@/api/client';
 import PredictionCard from '@/components/estimador/PredictionCard';
 import {
   caraMasProbable,
@@ -44,8 +44,6 @@ const MENU = [
   },
 ];
 
-const HEROE = 'https://media.base44.com/images/public/user_6a7f99939696f9235967341c/a67195a3e_IMG-20261010-WA0055.jpg';
-
 export default function Home() {
   const [bye, setBye] = useState(false);
   const [pronostico, setPronostico] = useState(null);
@@ -54,7 +52,7 @@ export default function Home() {
   const consultarPronostico = async () => {
     if (calculando) return;
     setCalculando(true);
-    const tiradas = await base44.entities.Tirada.list('-created_date', 300);
+    const tiradas = await api.listRolls(300);
     const dist = distribucionSuma(tiradas);
     setPronostico({
       mejor: sumaMasProbable(dist),
@@ -82,13 +80,15 @@ export default function Home() {
           </span>
         </div>
 
-        <div className="relative overflow-hidden rounded-[1.75rem] border border-amber-300/40 bg-[#00234a] p-1.5 shadow-[0_30px_70px_-28px_rgba(0,0,0,0.95)]">
-          <Image
-            src={HEROE}
-            alt="Liga de la Suerte: tira los dados y demuestra tu suerte"
-            className="h-[268px] w-full rounded-[1.4rem] object-cover"
-            fittingType="fill"
-          />
+        <div className="relative flex h-[268px] items-center justify-center gap-8 overflow-hidden rounded-[1.75rem] border border-amber-300/40 bg-[radial-gradient(circle_at_50%_30%,#195a8a_0%,#07345d_56%,#03213e_100%)] p-6 shadow-[0_30px_70px_-28px_rgba(0,0,0,0.95)]">
+          <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:repeating-conic-gradient(from_0deg_at_50%_20%,#ffffff_0deg_5deg,transparent_5deg_10deg)]" />
+          <Dice value={3} size={116} className="relative rotate-[-12deg]" />
+          <div className="relative text-center">
+            <Dices className="mx-auto h-8 w-8 text-amber-200" />
+            <p className="mt-2 font-heading text-2xl font-bold text-white">¡A jugar!</p>
+            <p className="text-sm text-sky-100/70">Suerte y estadística</p>
+          </div>
+          <Dice value={4} size={116} className="relative rotate-[10deg]" />
         </div>
 
         <p className="mt-5 text-center text-sm leading-relaxed text-sky-100/70">

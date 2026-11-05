@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import PageHeader from '@/components/PageHeader';
 import GameSetup from '@/components/GameSetup';
 import GameBoard from '@/components/GameBoard';
@@ -11,22 +11,15 @@ export default function Jugar() {
 
   useEffect(() => {
     (async () => {
-      const abiertas = await base44.entities.Sesion.filter(
-        { estado: 'en_curso' },
-        '-created_date',
-        1
-      );
+      const abiertas = await api.listSessions(1, 'en_curso');
       setSesion(abiertas[0] || null);
       setCargando(false);
     })();
   }, []);
 
   const crear = async ({ nombre, jornadas, equipos }) => {
-    const creada = await base44.entities.Sesion.create({ nombre, jornadas, estado: 'en_curso' });
-    await base44.entities.Equipo.bulkCreate(
-      equipos.map((nombreEquipo, i) => ({ sesion_id: creada.id, nombre: nombreEquipo, orden: i }))
-    );
-    setSesion(creada);
+    const creada = await api.createSession({ nombre, jornadas, equipos });
+    setSesion(creada.sesion);
     setNueva(false);
   };
 
