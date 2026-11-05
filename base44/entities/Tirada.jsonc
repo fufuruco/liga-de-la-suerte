@@ -1,0 +1,61 @@
+{
+  "name": "Tirada",
+  "type": "object",
+  "properties": {
+    "sesion_id": {
+      "type": "string"
+    },
+    "equipo_id": {
+      "type": "string"
+    },
+    "equipo_nombre": {
+      "type": "string"
+    },
+    "jornada": {
+      "type": "number",
+      "description": "N\u00famero de jornada (t)"
+    },
+    "dado1": {
+      "type": "number",
+      "description": "Resultado del primer dado"
+    },
+    "dado2": {
+      "type": "number",
+      "description": "Resultado del segundo dado"
+    },
+    "suma": {
+      "type": "number",
+      "description": "D = dado1 + dado2 (2 a 12)"
+    },
+    "ajuste": {
+      "type": "number",
+      "description": "I\u209c = D \u2212 4"
+    },
+    "puntaje_base": {
+      "type": "number",
+      "description": "T\u209c = 20 + 2t"
+    },
+    "puntaje_final": {
+      "type": "number",
+      "description": "Y\u209c = T\u209c + I\u209c"
+    },
+    "manual": {
+      "type": "boolean",
+      "description": "Registrada a mano desde dados f\u00edsicos"
+    }
+  },
+  "required": [
+    "sesion_id",
+    "equipo_id",
+    "jornada",
+    "dado1",
+    "dado2",
+    "suma"
+  ],
+  "rls": {
+    "read": {},
+    "create": {},
+    "update": {},
+    "delete": {}
+  }
+}
