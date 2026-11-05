@@ -69,97 +69,103 @@ export default function Home() {
     <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_50%_-10%,#1268b8_0%,#073c72_35%,#031f3b_70%,#00101f_100%)]">
       <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:repeating-conic-gradient(from_0deg_at_50%_20%,#ffffff_0deg_6deg,transparent_6deg_12deg)]" />
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col px-5 pb-10 pt-6">
+      <div className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col px-5 pb-10 pt-6 sm:px-8 lg:px-12">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.22em] text-amber-200/70">
             <Crown className="h-4 w-4 text-amber-300" />
-            Juego estadístico
+            Liga de la Suerte
           </div>
           <span className="rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-amber-200">
             6 jornadas
           </span>
         </div>
 
-        <div className="relative flex h-[268px] items-center justify-center gap-8 overflow-hidden rounded-[1.75rem] border border-amber-300/40 bg-[radial-gradient(circle_at_50%_30%,#195a8a_0%,#07345d_56%,#03213e_100%)] p-6 shadow-[0_30px_70px_-28px_rgba(0,0,0,0.95)]">
-          <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:repeating-conic-gradient(from_0deg_at_50%_20%,#ffffff_0deg_5deg,transparent_5deg_10deg)]" />
-          <Dice value={3} size={116} className="relative rotate-[-12deg]" />
-          <div className="relative text-center">
-            <Dices className="mx-auto h-8 w-8 text-amber-200" />
-            <p className="mt-2 font-heading text-2xl font-bold text-white">¡A jugar!</p>
-            <p className="text-sm text-sky-100/70">Suerte y estadística</p>
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(21rem,0.85fr)] lg:items-start">
+          <div className="min-w-0">
+            <div className="relative flex h-[240px] items-center justify-center gap-1 overflow-hidden rounded-[1.75rem] border border-amber-300/40 bg-[radial-gradient(circle_at_50%_30%,#195a8a_0%,#07345d_56%,#03213e_100%)] p-3 shadow-[0_30px_70px_-28px_rgba(0,0,0,0.95)] sm:h-[268px] sm:gap-8 sm:p-6 lg:h-[420px] lg:gap-12">
+              <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:repeating-conic-gradient(from_0deg_at_50%_20%,#ffffff_0deg_5deg,transparent_5deg_10deg)]" />
+              <Dice value={3} size={116} className="relative h-14 w-14 rotate-[-12deg] sm:h-28 sm:w-28 lg:h-36 lg:w-36" />
+              <div className="relative shrink-0 text-center">
+                <Dices className="mx-auto h-7 w-7 text-amber-200 sm:h-8 sm:w-8" />
+                <p className="mt-2 font-heading text-xl font-bold text-white sm:text-2xl">¡A jugar!</p>
+                <p className="text-xs text-sky-100/70 sm:text-sm">Suerte y estadística</p>
+              </div>
+              <Dice value={4} size={116} className="relative h-14 w-14 rotate-[10deg] sm:h-28 sm:w-28 lg:h-36 lg:w-36" />
+            </div>
+
+            <p className="mt-5 max-w-2xl text-center text-sm leading-relaxed text-sky-100/70 lg:text-left">
+              Tira los dados, registra cada jornada y descubre qué número tiene más probabilidad de salir
+              en el próximo lanzamiento.
+            </p>
           </div>
-          <Dice value={4} size={116} className="relative rotate-[10deg]" />
-        </div>
 
-        <p className="mt-5 text-center text-sm leading-relaxed text-sky-100/70">
-          Tira los dados, registra cada jornada y descubre qué número tiene más probabilidad de salir
-          en el próximo lanzamiento.
-        </p>
-
-        <div className="mt-6 space-y-3">
-          <Link
-            to="/jugar"
-            className="group flex items-center gap-4 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 px-5 py-4 text-left shadow-lg shadow-emerald-950/50 transition active:scale-[0.985]"
-          >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/20">
-              <Play className="h-5 w-5 text-white" fill="currentColor" />
-            </span>
-            <span className="flex-1">
-              <span className="block font-heading text-lg font-semibold text-white">Jugar</span>
-              <span className="block text-xs font-semibold text-emerald-50/80">Nueva partida por jornadas</span>
-            </span>
-            <ArrowRight className="h-5 w-5 text-white/80 transition group-hover:translate-x-0.5" />
-          </Link>
-
-          <Link
-            to="/estimador"
-            className="group flex items-center gap-4 rounded-2xl border border-amber-300/40 bg-gradient-to-br from-amber-300 to-amber-500 px-5 py-4 text-left shadow-lg shadow-amber-900/40 transition active:scale-[0.985]"
-          >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#03213e]/15">
-              <Target className="h-5 w-5 text-[#03213e]" />
-            </span>
-            <span className="flex-1">
-              <span className="block font-heading text-lg font-semibold text-[#03213e]">Estimar próximo tiro</span>
-              <span className="block text-xs font-semibold text-[#03213e]/70">Predicción con el historial</span>
-            </span>
-            <ArrowRight className="h-5 w-5 text-[#03213e]/70 transition group-hover:translate-x-0.5" />
-          </Link>
-
-          <div className="grid grid-cols-2 gap-3">
-            {MENU.filter((m) => m.to === '/puntajes' || m.to === '/configuracion').map((item) => (
+          <div className="min-w-0">
+            <div className="space-y-3">
               <Link
-                key={item.to}
-                to={item.to}
-                className={`flex flex-col gap-3 rounded-2xl border border-white/10 bg-gradient-to-br ${item.tone} px-4 py-4 text-left shadow-lg transition active:scale-[0.985]`}
+                to="/jugar"
+                className="group flex items-center gap-4 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 px-5 py-4 text-left shadow-lg shadow-emerald-950/50 transition active:scale-[0.985]"
               >
-                <item.icon className={item.to === '/puntajes' ? 'h-5 w-5 text-white' : 'h-5 w-5 text-[#0b2740]'} />
-                <span>
-                  <span className={`block font-heading text-base font-semibold ${item.to === '/puntajes' ? 'text-white' : 'text-[#0b2740]'}`}>
-                    {item.label}
-                  </span>
-                  <span className={`block text-[11px] font-semibold ${item.to === '/puntajes' ? 'text-white/75' : 'text-[#0b2740]/70'}`}>
-                    {item.hint}
-                  </span>
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/20">
+                  <Play className="h-5 w-5 text-white" fill="currentColor" />
                 </span>
+                <span className="flex-1">
+                  <span className="block font-heading text-lg font-semibold text-white">Jugar</span>
+                  <span className="block text-xs font-semibold text-emerald-50/80">Nueva partida por jornadas</span>
+                </span>
+                <ArrowRight className="h-5 w-5 text-white/80 transition group-hover:translate-x-0.5" />
               </Link>
-            ))}
+
+              <Link
+                to="/estimador"
+                className="group flex items-center gap-4 rounded-2xl border border-amber-300/40 bg-gradient-to-br from-amber-300 to-amber-500 px-5 py-4 text-left shadow-lg shadow-amber-900/40 transition active:scale-[0.985]"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#03213e]/15">
+                  <Target className="h-5 w-5 text-[#03213e]" />
+                </span>
+                <span className="flex-1">
+                  <span className="block font-heading text-lg font-semibold text-[#03213e]">Estimar próximo tiro</span>
+                  <span className="block text-xs font-semibold text-[#03213e]/70">Predicción con el historial</span>
+                </span>
+                <ArrowRight className="h-5 w-5 text-[#03213e]/70 transition group-hover:translate-x-0.5" />
+              </Link>
+
+              <div className="grid grid-cols-2 gap-3">
+                {MENU.filter((m) => m.to === '/puntajes' || m.to === '/configuracion').map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={`flex flex-col gap-3 rounded-2xl border border-white/10 bg-gradient-to-br ${item.tone} px-4 py-4 text-left shadow-lg transition active:scale-[0.985]`}
+                  >
+                    <item.icon className={item.to === '/puntajes' ? 'h-5 w-5 text-white' : 'h-5 w-5 text-[#0b2740]'} />
+                    <span>
+                      <span className={`block font-heading text-base font-semibold ${item.to === '/puntajes' ? 'text-white' : 'text-[#0b2740]'}`}>
+                        {item.label}
+                      </span>
+                      <span className={`block text-[11px] font-semibold ${item.to === '/puntajes' ? 'text-white/75' : 'text-[#0b2740]/70'}`}>
+                        {item.hint}
+                      </span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <button
+              onClick={consultarPronostico}
+              disabled={calculando}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-amber-300 to-amber-500 py-4 font-heading text-base font-semibold text-[#03213e] shadow-lg shadow-amber-900/40 active:scale-[0.99] disabled:opacity-60"
+            >
+              <Sparkles className="h-5 w-5" />
+              {calculando ? 'Calculando…' : 'Pronóstico de la nueva tirada'}
+            </button>
+
+            {pronostico && (
+              <div className="mt-3">
+                <PredictionCard {...pronostico} />
+              </div>
+            )}
           </div>
         </div>
-
-        <button
-          onClick={consultarPronostico}
-          disabled={calculando}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-amber-300 to-amber-500 py-4 font-heading text-base font-semibold text-[#03213e] shadow-lg shadow-amber-900/40 active:scale-[0.99] disabled:opacity-60"
-        >
-          <Sparkles className="h-5 w-5" />
-          {calculando ? 'Calculando…' : 'Pronóstico de la nueva tirada'}
-        </button>
-
-        {pronostico && (
-          <div className="mt-3">
-            <PredictionCard {...pronostico} />
-          </div>
-        )}
 
         <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
           <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-amber-200/80">
