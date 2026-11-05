@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 
-export default function PageHeader({ title, subtitle, right, backTo = '/' }) {
+export default function PageHeader({ title, subtitle, right = null, backTo = '/' }) {
   return (
     <div className="mb-5 flex items-center gap-3">
       <Link

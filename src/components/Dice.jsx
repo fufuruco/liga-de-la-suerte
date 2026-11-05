@@ -18,7 +18,7 @@ const FACE_COLORS = {
   6: '#ec4899',
 };
 
-export default function Dice({ value = 1, size = 96, rolling = false, className }) {
+export default function Dice({ value = 1, size = 96, rolling = false, className = undefined }) {
   const face = FACE_COLORS[value] || FACE_COLORS[1];
   const pips = PIPS[value] || PIPS[1];
 
