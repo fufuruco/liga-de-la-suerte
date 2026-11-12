@@ -41,6 +41,23 @@ export default function VidaDiaria() {
         subtitle="Fundamentos estadísticos, toma de decisiones y aplicaciones reales"
       />
 
+      {/* Integrantes del Grupo */}
+      <div className="mb-6 flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-[#02182d]/80 px-4 py-2.5 text-xs shadow-md">
+        <span className="font-bold uppercase tracking-wider text-sky-200/80 mr-1">Integrantes:</span>
+        <span className="rounded-lg border border-emerald-400/40 bg-emerald-500/15 px-2.5 py-1 font-bold text-emerald-300">
+          Elvin Sharon Centeno Gonzalez
+        </span>
+        <span className="rounded-lg border border-rose-400/40 bg-rose-500/15 px-2.5 py-1 font-bold text-rose-300">
+          Jorge Alberto Pereira Hernandez
+        </span>
+        <span className="rounded-lg border border-emerald-400/40 bg-teal-500/15 px-2.5 py-1 font-bold text-emerald-300">
+          Julio Emilio Guadamuz Medrano
+        </span>
+        <span className="rounded-lg border border-rose-400/40 bg-red-500/15 px-2.5 py-1 font-bold text-rose-300">
+          Oswaldo Emilio Martinez Rivera
+        </span>
+      </div>
+
       {/* Hero: La Ecuación Maestra de la Vida */}
       <section className="mb-10 overflow-hidden rounded-3xl border border-amber-300/30 bg-gradient-to-b from-[#0a3f72] to-[#03203c] p-6 shadow-2xl sm:p-8">
         <div className="flex flex-wrap items-center justify-between gap-4">

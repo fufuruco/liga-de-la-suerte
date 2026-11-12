@@ -12,6 +12,7 @@ import {
   Sparkles,
   FileSpreadsheet,
   Brain,
+  Users,
 } from 'lucide-react';
 import Dice from '@/components/Dice';
 import { api } from '@/api/client';
@@ -69,6 +70,85 @@ export default function Home() {
             </span>
           </div>
         </div>
+
+        {/* Banner Destacado de Integrantes del Grupo */}
+        <section aria-label="Integrantes del Grupo" className="mb-6 rounded-3xl border border-white/15 bg-gradient-to-r from-[#031d38]/95 via-[#062c52]/95 to-[#031d38]/95 p-4 sm:p-5 shadow-2xl backdrop-blur-md">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-400/20 text-emerald-300">
+                <Users className="h-3.5 w-3.5" />
+              </span>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-white">
+                Integrantes del Equipo
+              </span>
+            </div>
+            <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-300">
+              Proyecto de Estadística
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Elvin Sharon Centeno Gonzalez (Verde Esmeralda) */}
+            <div className="flex items-center gap-3 rounded-2xl border border-emerald-400/40 bg-gradient-to-br from-emerald-950/50 to-[#021b33] p-3 shadow-md shadow-emerald-950/30 transition hover:border-emerald-300 hover:scale-[1.02]">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-400/20 font-heading text-sm font-bold text-emerald-300 border border-emerald-400/30">
+                1
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-bold text-emerald-300 sm:text-base">
+                  Elvin Sharon
+                </p>
+                <p className="truncate text-xs font-semibold text-emerald-100/90">
+                  Centeno Gonzalez
+                </p>
+              </div>
+            </div>
+
+            {/* Jorge Alberto Pereira Hernandez (Rojo Vibrante) */}
+            <div className="flex items-center gap-3 rounded-2xl border border-rose-400/40 bg-gradient-to-br from-rose-950/50 to-[#021b33] p-3 shadow-md shadow-rose-950/30 transition hover:border-rose-300 hover:scale-[1.02]">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-rose-400/20 font-heading text-sm font-bold text-rose-300 border border-rose-400/30">
+                2
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-bold text-rose-300 sm:text-base">
+                  Jorge Alberto
+                </p>
+                <p className="truncate text-xs font-semibold text-rose-100/90">
+                  Pereira Hernandez
+                </p>
+              </div>
+            </div>
+
+            {/* Julio Emilio Guadamuz Medrano (Verde Menta) */}
+            <div className="flex items-center gap-3 rounded-2xl border border-emerald-400/40 bg-gradient-to-br from-teal-950/50 to-[#021b33] p-3 shadow-md shadow-emerald-950/30 transition hover:border-emerald-300 hover:scale-[1.02]">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-teal-400/20 font-heading text-sm font-bold text-emerald-300 border border-emerald-400/30">
+                3
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-bold text-emerald-300 sm:text-base">
+                  Julio Emilio
+                </p>
+                <p className="truncate text-xs font-semibold text-emerald-100/90">
+                  Guadamuz Medrano
+                </p>
+              </div>
+            </div>
+
+            {/* Oswaldo Emilio Martinez Rivera (Rojo Rubí) */}
+            <div className="flex items-center gap-3 rounded-2xl border border-rose-400/40 bg-gradient-to-br from-red-950/50 to-[#021b33] p-3 shadow-md shadow-rose-950/30 transition hover:border-rose-300 hover:scale-[1.02]">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-rose-400/20 font-heading text-sm font-bold text-rose-300 border border-rose-400/30">
+                4
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-bold text-rose-300 sm:text-base">
+                  Oswaldo Emilio
+                </p>
+                <p className="truncate text-xs font-semibold text-rose-100/90">
+                  Martinez Rivera
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(22rem,0.9fr)] lg:items-start">
           <div className="min-w-0">

@@ -26,6 +26,10 @@ export function exportarCSV(filas, estadisticas, nombreArchivo = 'liga-de-la-sue
   };
 
   const lineas = [];
+  lineas.push(['Proyecto: Liga de la Suerte - Registro y Calculadora Estadística'].map(escapeCSV).join(delimitador));
+  lineas.push(['Integrantes: Elvin Sharon Centeno Gonzalez, Jorge Alberto Pereira Hernandez, Julio Emilio Guadamuz Medrano, Oswaldo Emilio Martinez Rivera'].map(escapeCSV).join(delimitador));
+  lineas.push(['Fecha: ' + new Date().toLocaleString('es')].map(escapeCSV).join(delimitador));
+  lineas.push('');
   lineas.push(cabeceras.map(escapeCSV).join(delimitador));
 
   filas.forEach((f) => {
@@ -89,6 +93,7 @@ export function exportarXLS(filas, estadisticas, nombreArchivo = 'liga-de-la-sue
     </head>
     <body>
       <h2>Liga de la Suerte - Bitácora de Registro y Calculadora Estadística</h2>
+      <p><strong>Integrantes:</strong> Elvin Sharon Centeno Gonzalez • Jorge Alberto Pereira Hernandez • Julio Emilio Guadamuz Medrano • Oswaldo Emilio Martinez Rivera</p>
       <p>Generado el: ${new Date().toLocaleString('es')}</p>
       <br/>
       <table>

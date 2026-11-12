@@ -171,6 +171,23 @@ export default function HojaCalculo() {
         subtitle="Planilla tipo Excel con fórmulas en tiempo real y exportación"
       />
 
+      {/* Integrantes del Grupo */}
+      <div className="mb-4 flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-[#02182d]/80 px-4 py-2.5 text-xs shadow-md">
+        <span className="font-bold uppercase tracking-wider text-sky-200/80 mr-1">Integrantes:</span>
+        <span className="rounded-lg border border-emerald-400/40 bg-emerald-500/15 px-2.5 py-1 font-bold text-emerald-300">
+          Elvin Sharon Centeno Gonzalez
+        </span>
+        <span className="rounded-lg border border-rose-400/40 bg-rose-500/15 px-2.5 py-1 font-bold text-rose-300">
+          Jorge Alberto Pereira Hernandez
+        </span>
+        <span className="rounded-lg border border-emerald-400/40 bg-teal-500/15 px-2.5 py-1 font-bold text-emerald-300">
+          Julio Emilio Guadamuz Medrano
+        </span>
+        <span className="rounded-lg border border-rose-400/40 bg-red-500/15 px-2.5 py-1 font-bold text-rose-300">
+          Oswaldo Emilio Martinez Rivera
+        </span>
+      </div>
+
       {/* Barra de Herramientas Superior tipo Excel */}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#02182d]/90 p-3 sm:p-4 shadow-xl">
         <div className="flex flex-wrap items-center gap-2">
