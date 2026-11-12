@@ -17,7 +17,7 @@ import {
   sumaEsperada,
   sumaMasProbable,
 } from '@/lib/estadistica';
-import { AlertTriangle, CheckCircle2, Play, Sparkles, Target } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Play, Sparkles, Target, FileSpreadsheet, Brain } from 'lucide-react';
 
 const VENTANAS = [
   { id: 'todo', label: 'Todo' },
@@ -119,6 +119,24 @@ export default function Estimador() {
   return (
     <div className="mx-auto min-h-screen w-full max-w-6xl bg-[radial-gradient(circle_at_50%_-10%,#1268b8_0%,#073c72_35%,#031f3b_75%,#00101f_100%)] px-4 pb-12 pt-6 sm:px-8 lg:px-12">
       <PageHeader title="Estimador" subtitle="¿Qué suma caerá en el próximo tiro?" />
+
+      {/* Accesos rápidos a Hoja de Cálculo y Vida Diaria */}
+      <div className="mb-5 flex flex-wrap gap-2">
+        <Link
+          to="/hoja-calculo"
+          className="flex items-center gap-1.5 rounded-xl border border-amber-300/30 bg-amber-400/10 px-3.5 py-1.5 text-xs font-semibold text-amber-200 transition hover:bg-amber-400/20"
+        >
+          <FileSpreadsheet className="h-4 w-4" />
+          Hoja de Registro (Excel)
+        </Link>
+        <Link
+          to="/vida-diaria"
+          className="flex items-center gap-1.5 rounded-xl border border-sky-400/30 bg-sky-400/10 px-3.5 py-1.5 text-xs font-semibold text-sky-200 transition hover:bg-sky-400/20"
+        >
+          <Brain className="h-4 w-4" />
+          El Juego en la Vida Real
+        </Link>
+      </div>
 
       {tiradas.length === 0 ? (
         <>

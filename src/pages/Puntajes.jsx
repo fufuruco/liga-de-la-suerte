@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '@/api/client';
 import PageHeader from '@/components/PageHeader';
-import { Trophy, Trash2, ChevronRight, Users } from 'lucide-react';
+import { Trophy, Trash2, ChevronRight, Users, FileSpreadsheet } from 'lucide-react';
 
 const fecha = (iso) =>
   new Date(iso).toLocaleDateString('es', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -60,6 +60,23 @@ export default function Puntajes() {
   return (
     <div className="mx-auto min-h-screen w-full max-w-md bg-[radial-gradient(circle_at_50%_-10%,#1268b8_0%,#073c72_35%,#031f3b_75%,#00101f_100%)] px-5 pb-12 pt-6">
       <PageHeader title="Puntajes" subtitle="Tabla de posiciones" />
+
+      {/* Acceso a Hoja de Cálculo tipo Excel */}
+      <Link
+        to="/hoja-calculo"
+        className="mb-4 flex items-center justify-between rounded-2xl border border-amber-300/30 bg-gradient-to-r from-[#073663] to-[#04203b] p-3.5 shadow-md transition hover:border-amber-300 hover:bg-[#094175]"
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-400/20 text-amber-300">
+            <FileSpreadsheet className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="font-heading text-sm font-semibold text-white">Hoja de Registro (Excel)</p>
+            <p className="text-[11px] text-sky-200/70">Planilla con fórmulas y exportar .csv / .xls</p>
+          </div>
+        </div>
+        <ChevronRight className="h-4 w-4 text-amber-300" />
+      </Link>
 
       <div className="mb-4 grid grid-cols-2 gap-1 rounded-xl border border-white/10 bg-white/[0.04] p-1">
         {[

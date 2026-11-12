@@ -10,6 +10,8 @@ import Resultado from './pages/Resultado';
 import Estimador from './pages/Estimador';
 import Puntajes from './pages/Puntajes';
 import Configuracion from './pages/Configuracion';
+import HojaCalculo from './pages/HojaCalculo';
+import VidaDiaria from './pages/VidaDiaria';
 // Add page imports here
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
       <Route path="/jugar" element={<Jugar />} />
       <Route path="/resultado/:id" element={<Resultado />} />
       <Route path="/estimador" element={<Estimador />} />
+      <Route path="/hoja-calculo" element={<HojaCalculo />} />
+      <Route path="/vida-diaria" element={<VidaDiaria />} />
       <Route path="/puntajes" element={<Puntajes />} />
       <Route path="/configuracion" element={<Configuracion />} />
       <Route path="*" element={<PageNotFound />} />

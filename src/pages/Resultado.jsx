@@ -13,7 +13,8 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
-import { Trophy, Target, RotateCcw } from 'lucide-react';
+import { Trophy, Target, RotateCcw, FileSpreadsheet, Download } from 'lucide-react';
+import { exportarCSV, exportarXLS } from '@/utils/excelExport';
 
 export default function Resultado() {
   const { id } = useParams();
@@ -156,6 +157,75 @@ export default function Resultado() {
               ))}
             </LineChart>
           </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Sección de Exportación a Excel */}
+      <div className="mt-6 rounded-3xl border border-amber-300/30 bg-gradient-to-r from-[#073663] to-[#04203b] p-5 sm:p-6 shadow-xl">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span className="flex items-center gap-2 font-heading text-lg font-bold text-white">
+              <FileSpreadsheet className="h-5 w-5 text-amber-300" />
+              Exportar Registro de Partida a Excel
+            </span>
+            <p className="mt-1 text-xs text-sky-200/70">
+              Descarga la planilla con todas las rondas, fórmulas ($D, I_t, T_t, Y_t$) y el resumen estadístico.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => {
+                const n = tiradas.length || 1;
+                const sumas = tiradas.map((t) => t.suma);
+                const ajustes = tiradas.map((t) => t.ajuste);
+                const mediaSuma = sumas.reduce((a, b) => a + b, 0) / n;
+                const mediaAjuste = ajustes.reduce((a, b) => a + b, 0) / n;
+                const varianza = sumas.reduce((acc, v) => acc + (v - mediaSuma) ** 2, 0) / n;
+                const estadisticas = {
+                  totalTiros: n,
+                  mediaSuma,
+                  mediaAjuste,
+                  desviacionSuma: Math.sqrt(varianza),
+                  varianzaSuma: varianza,
+                  mediaPuntajeFinal: tiradas.reduce((a, b) => a + b.puntaje_final, 0) / n,
+                };
+                exportarCSV(tiradas, estadisticas, `partida-${sesion.nombre.toLowerCase().replace(/\s+/g, '-')}.csv`);
+              }}
+              className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-emerald-500"
+            >
+              <Download className="h-4 w-4" />
+              Descargar .CSV (Excel)
+            </button>
+            <button
+              onClick={() => {
+                const n = tiradas.length || 1;
+                const sumas = tiradas.map((t) => t.suma);
+                const ajustes = tiradas.map((t) => t.ajuste);
+                const mediaSuma = sumas.reduce((a, b) => a + b, 0) / n;
+                const mediaAjuste = ajustes.reduce((a, b) => a + b, 0) / n;
+                const varianza = sumas.reduce((acc, v) => acc + (v - mediaSuma) ** 2, 0) / n;
+                const estadisticas = {
+                  totalTiros: n,
+                  mediaSuma,
+                  mediaAjuste,
+                  desviacionSuma: Math.sqrt(varianza),
+                  varianzaSuma: varianza,
+                  mediaPuntajeFinal: tiradas.reduce((a, b) => a + b.puntaje_final, 0) / n,
+                };
+                exportarXLS(tiradas, estadisticas, `partida-${sesion.nombre.toLowerCase().replace(/\s+/g, '-')}.xls`);
+              }}
+              className="flex items-center gap-1.5 rounded-xl bg-amber-400 px-4 py-2.5 text-xs font-bold text-[#03213e] shadow-md transition hover:bg-amber-300"
+            >
+              <FileSpreadsheet className="h-4 w-4" />
+              Descargar .XLS
+            </button>
+            <Link
+              to="/hoja-calculo"
+              className="flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-white/20"
+            >
+              Abrir en Hoja de Cálculo →
+            </Link>
+          </div>
         </div>
       </div>
 

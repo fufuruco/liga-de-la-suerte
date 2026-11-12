@@ -1,6 +1,18 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Play, Target, Trophy, Settings, LogOut, Crown, Dices, ArrowRight, Sparkles } from 'lucide-react';
+import {
+  Play,
+  Target,
+  Trophy,
+  Settings,
+  LogOut,
+  Crown,
+  Dices,
+  ArrowRight,
+  Sparkles,
+  FileSpreadsheet,
+  Brain,
+} from 'lucide-react';
 import Dice from '@/components/Dice';
 import { api } from '@/api/client';
 import PredictionCard from '@/components/estimador/PredictionCard';
@@ -12,37 +24,6 @@ import {
   sumaEsperada,
   sumaMasProbable,
 } from '@/lib/estadistica';
-
-const MENU = [
-  {
-    to: '/jugar',
-    label: 'Jugar',
-    hint: 'Nueva partida por jornadas',
-    icon: Play,
-    tone: 'from-emerald-400 to-emerald-600 shadow-emerald-900/50',
-  },
-  {
-    to: '/estimador',
-    label: 'Estimar próximo tiro',
-    hint: 'Predicción con el historial',
-    icon: Target,
-    tone: 'from-sky-400 to-sky-600 shadow-sky-900/50',
-  },
-  {
-    to: '/puntajes',
-    label: 'Puntajes',
-    hint: 'Tabla de posiciones',
-    icon: Trophy,
-    tone: 'from-fuchsia-400 to-purple-600 shadow-purple-900/50',
-  },
-  {
-    to: '/configuracion',
-    label: 'Configuración',
-    hint: 'Equipos, jornadas y reglas',
-    icon: Settings,
-    tone: 'from-slate-300 to-slate-400 shadow-slate-900/50',
-  },
-];
 
 export default function Home() {
   const [bye, setBye] = useState(false);
@@ -75,12 +56,21 @@ export default function Home() {
             <Crown className="h-4 w-4 text-amber-300" />
             Liga de la Suerte
           </div>
-          <span className="rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-amber-200">
-            6 jornadas
-          </span>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/configuracion"
+              className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold text-sky-200/80 transition hover:bg-white/10 hover:text-white"
+            >
+              <Settings className="h-3.5 w-3.5" />
+              Configuración
+            </Link>
+            <span className="rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-amber-200">
+              6 jornadas
+            </span>
+          </div>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(21rem,0.85fr)] lg:items-start">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(22rem,0.9fr)] lg:items-start">
           <div className="min-w-0">
             <div className="relative flex h-[240px] items-center justify-center gap-1 overflow-hidden rounded-[1.75rem] border border-amber-300/40 bg-[radial-gradient(circle_at_50%_30%,#195a8a_0%,#07345d_56%,#03213e_100%)] p-3 shadow-[0_30px_70px_-28px_rgba(0,0,0,0.95)] sm:h-[268px] sm:gap-8 sm:p-6 lg:h-[420px] lg:gap-12">
               <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:repeating-conic-gradient(from_0deg_at_50%_20%,#ffffff_0deg_5deg,transparent_5deg_10deg)]" />
@@ -94,13 +84,13 @@ export default function Home() {
             </div>
 
             <p className="mt-5 max-w-2xl text-center text-sm leading-relaxed text-sky-100/70 lg:text-left">
-              Tira los dados, registra cada jornada y descubre qué número tiene más probabilidad de salir
-              en el próximo lanzamiento.
+              Herramienta educativa de registro de datos por ronda, calculadora estadística y modelado probabilístico de dos dados.
             </p>
           </div>
 
           <div className="min-w-0">
             <div className="space-y-3">
+              {/* Botón Principal: Jugar */}
               <Link
                 to="/jugar"
                 className="group flex items-center gap-4 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 px-5 py-4 text-left shadow-lg shadow-emerald-950/50 transition active:scale-[0.985]"
@@ -109,51 +99,94 @@ export default function Home() {
                   <Play className="h-5 w-5 text-white" fill="currentColor" />
                 </span>
                 <span className="flex-1">
-                  <span className="block font-heading text-lg font-semibold text-white">Jugar</span>
-                  <span className="block text-xs font-semibold text-emerald-50/80">Nueva partida por jornadas</span>
+                  <span className="block font-heading text-lg font-semibold text-white">Jugar Partida</span>
+                  <span className="block text-xs font-semibold text-emerald-50/80">Partida interactiva por jornadas</span>
                 </span>
                 <ArrowRight className="h-5 w-5 text-white/80 transition group-hover:translate-x-0.5" />
               </Link>
 
+              {/* Botón Destacado: Hoja Excel y Fórmulas */}
               <Link
-                to="/estimador"
-                className="group flex items-center gap-4 rounded-2xl border border-amber-300/40 bg-gradient-to-br from-amber-300 to-amber-500 px-5 py-4 text-left shadow-lg shadow-amber-900/40 transition active:scale-[0.985]"
+                to="/hoja-calculo"
+                className="group flex items-center gap-4 rounded-2xl border border-amber-300/40 bg-gradient-to-br from-[#073867] to-[#04203b] px-5 py-4 text-left shadow-lg shadow-black/40 transition hover:border-amber-300 hover:bg-[#094175] active:scale-[0.985]"
               >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#03213e]/15">
-                  <Target className="h-5 w-5 text-[#03213e]" />
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-400/20 text-amber-300">
+                  <FileSpreadsheet className="h-6 w-6" />
                 </span>
                 <span className="flex-1">
-                  <span className="block font-heading text-lg font-semibold text-[#03213e]">Estimar próximo tiro</span>
-                  <span className="block text-xs font-semibold text-[#03213e]/70">Predicción con el historial</span>
+                  <span className="flex items-center gap-2 font-heading text-lg font-semibold text-white">
+                    Hoja de Registro (Excel)
+                    <span className="rounded-md bg-amber-400/20 px-2 py-0.5 text-[10px] font-bold text-amber-300">
+                      NUEVO
+                    </span>
+                  </span>
+                  <span className="block text-xs font-semibold text-sky-200/70">
+                    Planilla interactiva, fórmulas en vivo y exportar CSV/XLS
+                  </span>
                 </span>
-                <ArrowRight className="h-5 w-5 text-[#03213e]/70 transition group-hover:translate-x-0.5" />
+                <ArrowRight className="h-5 w-5 text-amber-300/80 transition group-hover:translate-x-0.5" />
               </Link>
 
-              <div className="grid grid-cols-2 gap-3">
-                {MENU.filter((m) => m.to === '/puntajes' || m.to === '/configuracion').map((item) => (
-                  <Link
-                    key={item.to}
-                    to={item.to}
-                    className={`flex flex-col gap-3 rounded-2xl border border-white/10 bg-gradient-to-br ${item.tone} px-4 py-4 text-left shadow-lg transition active:scale-[0.985]`}
-                  >
-                    <item.icon className={item.to === '/puntajes' ? 'h-5 w-5 text-white' : 'h-5 w-5 text-[#0b2740]'} />
-                    <span>
-                      <span className={`block font-heading text-base font-semibold ${item.to === '/puntajes' ? 'text-white' : 'text-[#0b2740]'}`}>
-                        {item.label}
-                      </span>
-                      <span className={`block text-[11px] font-semibold ${item.to === '/puntajes' ? 'text-white/75' : 'text-[#0b2740]/70'}`}>
-                        {item.hint}
-                      </span>
+              {/* Botón Destacado: El Juego en la Vida Real */}
+              <Link
+                to="/vida-diaria"
+                className="group flex items-center gap-4 rounded-2xl border border-sky-400/30 bg-gradient-to-br from-[#073663] to-[#031d36] px-5 py-4 text-left shadow-lg shadow-black/40 transition hover:border-sky-300 hover:bg-[#0a4278] active:scale-[0.985]"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sky-400/20 text-sky-300">
+                  <Brain className="h-6 w-6" />
+                </span>
+                <span className="flex-1">
+                  <span className="flex items-center gap-2 font-heading text-lg font-semibold text-white">
+                    El Juego en la Vida Diaria
+                    <span className="rounded-md bg-sky-400/20 px-2 py-0.5 text-[10px] font-bold text-sky-300">
+                      CASOS
                     </span>
-                  </Link>
-                ))}
+                  </span>
+                  <span className="block text-xs font-semibold text-sky-200/70">
+                    Finanzas, carrera, deportes y toma de decisiones
+                  </span>
+                </span>
+                <ArrowRight className="h-5 w-5 text-sky-300/80 transition group-hover:translate-x-0.5" />
+              </Link>
+
+              {/* Fila de 2 Columnas: Estimador y Puntajes */}
+              <div className="grid grid-cols-2 gap-3">
+                <Link
+                  to="/estimador"
+                  className="flex flex-col gap-2 rounded-2xl border border-sky-300/20 bg-[#05284b] p-4 text-left shadow-lg transition hover:bg-[#07335e] active:scale-[0.985]"
+                >
+                  <Target className="h-5 w-5 text-sky-300" />
+                  <span>
+                    <span className="block font-heading text-sm font-semibold text-white">
+                      Estimador
+                    </span>
+                    <span className="block text-[11px] font-semibold text-sky-200/60">
+                      Pronóstico bayesiano
+                    </span>
+                  </span>
+                </Link>
+
+                <Link
+                  to="/puntajes"
+                  className="flex flex-col gap-2 rounded-2xl border border-fuchsia-400/20 bg-[#05284b] p-4 text-left shadow-lg transition hover:bg-[#07335e] active:scale-[0.985]"
+                >
+                  <Trophy className="h-5 w-5 text-amber-300" />
+                  <span>
+                    <span className="block font-heading text-sm font-semibold text-white">
+                      Puntajes
+                    </span>
+                    <span className="block text-[11px] font-semibold text-sky-200/60">
+                      Tabla de posiciones
+                    </span>
+                  </span>
+                </Link>
               </div>
             </div>
 
             <button
               onClick={consultarPronostico}
               disabled={calculando}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-amber-300 to-amber-500 py-4 font-heading text-base font-semibold text-[#03213e] shadow-lg shadow-amber-900/40 active:scale-[0.99] disabled:opacity-60"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-amber-300 to-amber-500 py-3.5 font-heading text-base font-semibold text-[#03213e] shadow-lg shadow-amber-900/40 active:scale-[0.99] disabled:opacity-60"
             >
               <Sparkles className="h-5 w-5" />
               {calculando ? 'Calculando…' : 'Pronóstico de la nueva tirada'}
@@ -168,25 +201,30 @@ export default function Home() {
         </div>
 
         <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-          <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-amber-200/80">
-            <Dices className="h-4 w-4" />
-            Cómo se calcula
+          <div className="mb-3 flex items-center justify-between text-xs font-bold uppercase tracking-[0.16em] text-amber-200/80">
+            <span className="flex items-center gap-2">
+              <Dices className="h-4 w-4" />
+              Fórmulas Estadísticas Fundamentales
+            </span>
+            <Link to="/vida-diaria" className="text-[11px] text-sky-300 hover:underline">
+              Ver explicación completa →
+            </Link>
           </div>
           <dl className="grid grid-cols-3 gap-2 text-center">
             <div className="rounded-xl bg-[#042544]/70 px-2 py-3">
               <dt className="font-mono text-[11px] text-sky-200/60">Tₜ</dt>
               <dd className="mt-1 font-heading text-sm text-white">20 + 2t</dd>
-              <dd className="mt-0.5 text-[10px] font-semibold text-sky-200/50">Base</dd>
+              <dd className="mt-0.5 text-[10px] font-semibold text-sky-200/50">Base de Jornada</dd>
             </div>
             <div className="rounded-xl bg-[#042544]/70 px-2 py-3">
               <dt className="font-mono text-[11px] text-sky-200/60">Iₜ</dt>
               <dd className="mt-1 font-heading text-sm text-white">D − 4</dd>
-              <dd className="mt-0.5 text-[10px] font-semibold text-sky-200/50">Suerte</dd>
+              <dd className="mt-0.5 text-[10px] font-semibold text-sky-200/50">Ajuste de Suerte</dd>
             </div>
             <div className="rounded-xl bg-[#042544]/70 px-2 py-3">
               <dt className="font-mono text-[11px] text-sky-200/60">Yₜ</dt>
               <dd className="mt-1 font-heading text-sm text-white">Tₜ + Iₜ</dd>
-              <dd className="mt-0.5 text-[10px] font-semibold text-sky-200/50">Puntaje</dd>
+              <dd className="mt-0.5 text-[10px] font-semibold text-sky-200/50">Puntaje Final</dd>
             </div>
           </dl>
         </div>
