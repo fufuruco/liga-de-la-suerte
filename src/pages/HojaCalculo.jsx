@@ -12,6 +12,8 @@ import {
   Calculator,
   TrendingUp,
   Info,
+  Database,
+  Layers,
 } from 'lucide-react';
 
 const EJEMPLO_INICIAL = [
@@ -30,14 +32,50 @@ const EJEMPLO_INICIAL = [
 ];
 
 export default function HojaCalculo() {
-  const [filas, setFilas] = useState(EJEMPLO_INICIAL);
+  const [filas, setFilas] = useState([]);
   const [sesionesGuardadas, setSesionesGuardadas] = useState([]);
-  const [cargandoSesiones, setCargandoSesiones] = useState(false);
+  const [cargandoDatos, setCargandoDatos] = useState(true);
   const [mostrarModalCargar, setMostrarModalCargar] = useState(false);
+  const [origenActual, setOrigenActual] = useState('cargando'); // 'historial' | 'sesion' | 'ejemplo' | 'manual'
+  const [tituloDataset, setTituloDataset] = useState('Historial completo');
 
-  // Cargar lista de sesiones de la base de datos para poder importarlas
+  // Cargar automáticamente todo el historial de tiradas guardadas en la base de datos
+  const cargarTodoElHistorial = async () => {
+    try {
+      setCargandoDatos(true);
+      const tiradas = await api.listRolls(1000);
+      if (tiradas && tiradas.length > 0) {
+        // Invertir orden para que aparezcan en orden cronológico (de más antigua a más nueva)
+        const cronologicas = [...tiradas].reverse();
+        setFilas(
+          cronologicas.map((t) => ({
+            id: t.id,
+            jornada: t.jornada,
+            equipo_nombre: t.equipo_nombre,
+            dado1: t.dado1,
+            dado2: t.dado2,
+            sesion_id: t.sesion_id,
+          }))
+        );
+        setOrigenActual('historial');
+        setTituloDataset(`Todo el Historial Guardado (${tiradas.length} tiradas)`);
+      } else {
+        setFilas(EJEMPLO_INICIAL);
+        setOrigenActual('ejemplo');
+        setTituloDataset('Ejemplo de Demostración (12 tiradas)');
+      }
+    } catch {
+      setFilas(EJEMPLO_INICIAL);
+      setOrigenActual('ejemplo');
+      setTituloDataset('Ejemplo de Demostración (12 tiradas)');
+    } finally {
+      setCargandoDatos(false);
+    }
+  };
+
   useEffect(() => {
-    api.listSessions(50).then((res) => {
+    cargarTodoElHistorial();
+    api.listSessions(100).then((res) => {
       setSesionesGuardadas(res || []);
     }).catch(() => {});
   }, []);
@@ -140,11 +178,11 @@ export default function HojaCalculo() {
     setFilas((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Cargar datos desde una sesión en base de datos
-  const cargarDesdeSesion = async (sesionId) => {
+  // Cargar datos desde una sesión específica
+  const cargarDesdeSesion = async (sesion) => {
     try {
-      setCargandoSesiones(true);
-      const tiradas = await api.listSessionRolls(sesionId, 300);
+      setCargandoDatos(true);
+      const tiradas = await api.listSessionRolls(sesion.id, 500);
       if (tiradas && tiradas.length > 0) {
         setFilas(
           tiradas.map((t) => ({
@@ -153,14 +191,19 @@ export default function HojaCalculo() {
             equipo_nombre: t.equipo_nombre,
             dado1: t.dado1,
             dado2: t.dado2,
+            sesion_id: t.sesion_id,
           }))
         );
+        setOrigenActual('sesion');
+        setTituloDataset(`Partida: ${sesion.nombre} (${tiradas.length} tiradas)`);
+      } else {
+        alert('Esta partida aún no tiene tiradas registradas.');
       }
       setMostrarModalCargar(false);
     } catch {
       alert('No se pudieron obtener los datos de la sesión.');
     } finally {
-      setCargandoSesiones(false);
+      setCargandoDatos(false);
     }
   };
 
@@ -191,29 +234,58 @@ export default function HojaCalculo() {
       {/* Barra de Herramientas Superior tipo Excel */}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#02182d]/90 p-3 sm:p-4 shadow-xl">
         <div className="flex flex-wrap items-center gap-2">
+          {/* Botón Cargar TODO el historial */}
           <button
-            onClick={agregarFila}
-            className="flex items-center gap-1.5 rounded-xl bg-emerald-500 px-3.5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-md transition hover:bg-emerald-400"
+            onClick={cargarTodoElHistorial}
+            className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold uppercase tracking-wider shadow-md transition ${
+              origenActual === 'historial'
+                ? 'bg-amber-400 text-[#03213e] ring-2 ring-amber-300'
+                : 'bg-white/10 text-amber-300 hover:bg-white/20'
+            }`}
+            title="Cargar todas las tiradas de todas las partidas guardadas en la base de datos"
           >
-            <Plus className="h-4 w-4" />
-            Agregar Fila
+            <Database className="h-4 w-4" />
+            Todo el Historial
           </button>
+
+          {/* Botón Importar Partida Específica */}
           <button
             onClick={() => setMostrarModalCargar(true)}
             className="flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-sky-200 transition hover:bg-white/10"
           >
-            <FolderOpen className="h-4 w-4 text-amber-300" />
-            Importar Partida
+            <FolderOpen className="h-4 w-4 text-sky-300" />
+            Por Partida...
           </button>
+
+          {/* Botón Agregar Fila */}
           <button
-            onClick={() => setFilas(EJEMPLO_INICIAL)}
+            onClick={agregarFila}
+            className="flex items-center gap-1.5 rounded-xl bg-emerald-500 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-md transition hover:bg-emerald-400"
+          >
+            <Plus className="h-4 w-4" />
+            Agregar Fila
+          </button>
+
+          {/* Botón Cargar Ejemplo */}
+          <button
+            onClick={() => {
+              setFilas(EJEMPLO_INICIAL);
+              setOrigenActual('ejemplo');
+              setTituloDataset('Ejemplo de Demostración (12 tiradas)');
+            }}
             className="flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-sky-200 transition hover:bg-white/10"
           >
             <RefreshCw className="h-3.5 w-3.5" />
-            Cargar Ejemplo
+            Ejemplo
           </button>
+
+          {/* Botón Limpiar */}
           <button
-            onClick={() => setFilas([])}
+            onClick={() => {
+              setFilas([]);
+              setOrigenActual('manual');
+              setTituloDataset('Hoja en blanco');
+            }}
             className="flex items-center gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-300 transition hover:bg-rose-500/20"
           >
             <Trash2 className="h-3.5 w-3.5" />
@@ -224,7 +296,7 @@ export default function HojaCalculo() {
         {/* Botones de Exportar */}
         <div className="flex flex-wrap items-center gap-2">
           <button
-            onClick={() => exportarCSV(filasCalculadas, estadisticas)}
+            onClick={() => exportarCSV(filasCalculadas, estadisticas, `registro-${origenActual}.csv`)}
             className="flex items-center gap-1.5 rounded-xl bg-emerald-700/80 px-3.5 py-2 text-xs font-bold text-white shadow-md transition hover:bg-emerald-600"
             title="Descargar archivo .CSV compatible con Microsoft Excel"
           >
@@ -232,13 +304,25 @@ export default function HojaCalculo() {
             Exportar CSV (Excel)
           </button>
           <button
-            onClick={() => exportarXLS(filasCalculadas, estadisticas)}
+            onClick={() => exportarXLS(filasCalculadas, estadisticas, `registro-${origenActual}.xls`)}
             className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 px-3.5 py-2 text-xs font-bold text-[#03213e] shadow-md transition hover:brightness-110"
             title="Descargar archivo .XLS con estilos y fórmulas"
           >
             <FileSpreadsheet className="h-4 w-4" />
             Exportar XLS
           </button>
+        </div>
+      </div>
+
+      {/* Indicador de qué dataset está cargado */}
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-sky-950/40 px-4 py-2 border border-sky-400/20 text-xs">
+        <div className="flex items-center gap-2">
+          <Layers className="h-4 w-4 text-amber-300" />
+          <span className="font-semibold text-sky-100">Vista actual:</span>
+          <span className="font-bold text-amber-300">{tituloDataset}</span>
+        </div>
+        <div className="text-sky-300/80 font-mono">
+          Mostrando {filasCalculadas.length} tiradas calculadas
         </div>
       </div>
 
@@ -253,11 +337,11 @@ export default function HojaCalculo() {
         </span>
       </div>
 
-      {/* Tabla Tipo Hoja de Cálculo Excel */}
+      {/* Tabla Tipo Hoja de Cálculo Excel con Scroll */}
       <div className="mb-8 overflow-hidden rounded-2xl border border-white/15 bg-[#02182d] shadow-2xl">
-        <div className="overflow-x-auto">
+        <div className="max-h-[620px] overflow-x-auto overflow-y-auto">
           <table className="w-full min-w-[760px] border-collapse font-sans text-xs sm:text-sm">
-            <thead>
+            <thead className="sticky top-0 z-10 shadow-md">
               {/* Cabecera con letras de columnas estilo Excel A, B, C, D... */}
               <tr className="border-b border-white/10 bg-[#062648] text-[10px] font-bold text-sky-300/60">
                 <th className="w-10 border-r border-white/10 px-2 py-1 text-center">#</th>
@@ -284,29 +368,38 @@ export default function HojaCalculo() {
                 <th className="border-r border-white/10 px-2 py-3 text-center bg-amber-400/20 text-amber-200">
                   Dado 2 (d₂)
                 </th>
-                <th className="border-r border-white/10 px-3 py-3 text-center bg-sky-900/40">
+                <th className="border-r border-white/10 px-3 py-3 text-center bg-sky-900/60">
                   Suma (D)
                 </th>
-                <th className="border-r border-white/10 px-3 py-3 text-center bg-sky-900/40">
+                <th className="border-r border-white/10 px-3 py-3 text-center bg-sky-900/60">
                   Ajuste (Iₜ)
                 </th>
-                <th className="border-r border-white/10 px-3 py-3 text-center bg-sky-900/40">
+                <th className="border-r border-white/10 px-3 py-3 text-center bg-sky-900/60">
                   Base (Tₜ)
                 </th>
-                <th className="border-r border-white/10 px-3 py-3 text-center bg-emerald-900/40 text-emerald-200">
+                <th className="border-r border-white/10 px-3 py-3 text-center bg-emerald-900/60 text-emerald-200">
                   Puntaje (Yₜ)
                 </th>
-                <th className="border-r border-white/10 px-3 py-3 text-center bg-purple-900/30 text-purple-200">
+                <th className="border-r border-white/10 px-3 py-3 text-center bg-purple-900/50 text-purple-200">
                   Acumulado
                 </th>
                 <th className="px-2 py-3 text-center"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10 font-mono">
-              {filasCalculadas.length === 0 ? (
+              {cargandoDatos ? (
                 <tr>
                   <td colSpan={11} className="py-12 text-center text-sky-200/60 font-sans">
-                    La hoja está vacía. Haz clic en <strong>"Agregar Fila"</strong> o <strong>"Cargar Ejemplo"</strong>.
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-amber-300 border-t-transparent" />
+                      Cargando tiradas desde la base de datos...
+                    </div>
+                  </td>
+                </tr>
+              ) : filasCalculadas.length === 0 ? (
+                <tr>
+                  <td colSpan={11} className="py-12 text-center text-sky-200/60 font-sans">
+                    La hoja está vacía. Haz clic en <strong>"Todo el Historial"</strong>, <strong>"Por Partida"</strong> o <strong>"Agregar Fila"</strong>.
                   </td>
                 </tr>
               ) : (
@@ -417,7 +510,7 @@ export default function HojaCalculo() {
             </tbody>
             {/* Pie de tabla con Resumen Automático */}
             {filasCalculadas.length > 0 && (
-              <tfoot className="border-t-2 border-amber-300/40 bg-[#062648] font-mono text-xs font-bold text-white">
+              <tfoot className="sticky bottom-0 z-10 border-t-2 border-amber-300/40 bg-[#062648] font-mono text-xs font-bold text-white shadow-lg">
                 <tr>
                   <td colSpan={3} className="border-r border-white/10 px-4 py-3 text-right font-heading uppercase text-amber-300">
                     Promedios y Estadísticos ({estadisticas.totalTiros} tiros)
@@ -557,41 +650,66 @@ export default function HojaCalculo() {
 
       {/* Modal para Seleccionar e Importar Partidas Guardadas */}
       {mostrarModalCargar && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
           <div className="w-full max-w-lg rounded-3xl border border-white/15 bg-[#03203e] p-6 shadow-2xl">
             <h3 className="font-heading text-lg font-bold text-white">
-              Importar datos desde una partida existente
+              Seleccionar Partida Específica
             </h3>
             <p className="mt-1 text-xs text-sky-200/70">
-              Selecciona una de las partidas guardadas en la base de datos para cargar sus tiros en la hoja:
+              Elige una de las partidas registradas o carga el historial global completo:
             </p>
 
-            <div className="mt-4 max-h-60 space-y-2 overflow-y-auto pr-1">
-              {cargandoSesiones ? (
-                <div className="py-8 text-center text-sm text-sky-200">Cargando partidas...</div>
-              ) : sesionesGuardadas.length === 0 ? (
-                <div className="rounded-xl bg-white/5 py-8 text-center text-sm text-sky-200/60">
-                  No hay partidas registradas en la base de datos todavía.
+            {/* Opción rápida: Todo el historial */}
+            <button
+              onClick={() => {
+                cargarTodoElHistorial();
+                setMostrarModalCargar(false);
+              }}
+              className="mt-4 flex w-full items-center justify-between rounded-2xl border border-amber-300/40 bg-amber-400/10 p-3.5 text-left transition hover:bg-amber-400/20"
+            >
+              <div className="flex items-center gap-3">
+                <Database className="h-5 w-5 text-amber-300" />
+                <div>
+                  <p className="font-bold text-white">Cargar TODO el Historial de Tiradas</p>
+                  <p className="text-[11px] text-amber-200/80">
+                    Incluye todas las rondas y equipos registrados en la base de datos
+                  </p>
                 </div>
-              ) : (
-                sesionesGuardadas.map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => cargarDesdeSesion(s.id)}
-                    className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.04] p-3 text-left transition hover:border-amber-300/40 hover:bg-white/[0.08]"
-                  >
-                    <div>
-                      <p className="font-bold text-white">{s.nombre}</p>
-                      <p className="text-[11px] text-sky-200/60">
-                        {s.jornadas} jornadas • {new Date(s.created_date).toLocaleDateString('es')}
-                      </p>
-                    </div>
-                    <span className="rounded-lg bg-emerald-500/20 px-2.5 py-1 text-xs font-bold text-emerald-300">
-                      Cargar
-                    </span>
-                  </button>
-                ))
-              )}
+              </div>
+              <span className="rounded-lg bg-amber-400 px-2.5 py-1 text-xs font-bold text-[#03213e]">
+                Cargar Todo
+              </span>
+            </button>
+
+            <div className="mt-4 border-t border-white/10 pt-3">
+              <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-sky-200/60">
+                Partidas individuales:
+              </p>
+              <div className="max-h-56 space-y-2 overflow-y-auto pr-1">
+                {sesionesGuardadas.length === 0 ? (
+                  <div className="rounded-xl bg-white/5 py-6 text-center text-xs text-sky-200/60">
+                    No hay partidas individuales registradas.
+                  </div>
+                ) : (
+                  sesionesGuardadas.map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() => cargarDesdeSesion(s)}
+                      className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.04] p-3 text-left transition hover:border-sky-300/40 hover:bg-white/[0.08]"
+                    >
+                      <div>
+                        <p className="font-bold text-white">{s.nombre}</p>
+                        <p className="text-[11px] text-sky-200/60">
+                          {s.jornadas} jornadas • Campeón: {s.campeon || 'En curso'} • {new Date(s.created_date).toLocaleDateString('es')}
+                        </p>
+                      </div>
+                      <span className="rounded-lg bg-sky-500/20 px-2.5 py-1 text-xs font-bold text-sky-200">
+                        Abrir
+                      </span>
+                    </button>
+                  ))
+                )}
+              </div>
             </div>
 
             <div className="mt-6 flex justify-end">

@@ -4,6 +4,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import ScrollToTop from './components/ScrollToTop';
+import AppQRCode from './components/AppQRCode';
 import Home from './pages/Home';
 import Jugar from './pages/Jugar';
 import Resultado from './pages/Resultado';
@@ -19,6 +20,7 @@ function App() {
     <QueryClientProvider client={queryClientInstance}>
       <Router>
         <ScrollToTop />
+        <AppQRCode />
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/jugar" element={<Jugar />} />
